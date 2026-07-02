@@ -1,0 +1,20 @@
+# Energy Agent preset: evaluate dbbench-std with the energy-orchestrator.
+#
+# Usage:
+#   python -m src.assigner --config configs/assignments/energy_db.yaml
+
+import: definition.yaml
+
+concurrency:
+  task:
+    dbbench-std: 1
+  agent:
+    energy-orchestrator: 1
+
+assignments:
+  - agent:
+      - energy-orchestrator
+    task:
+      - dbbench-std
+
+output: "outputs/energy_db/{TIMESTAMP}"

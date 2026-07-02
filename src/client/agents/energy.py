@@ -5,13 +5,10 @@ from src.client.agent import AgentClient
 
 # Ensure external energy_landscape package can be imported even if it's outside this repository.
 here = os.path.abspath(os.path.dirname(__file__))
-candidates = [os.getcwd()]
-candidates += [os.path.abspath(os.path.join(os.getcwd(), *(['..'] * i))) for i in range(1, 6)]
-for path in candidates:
-    if os.path.isdir(os.path.join(path, "energy_landscape")):
-        if path not in sys.path:
-            sys.path.insert(0, path)
-        break
+# Check local first
+if os.path.isdir(os.path.join(os.getcwd(), "energy_landscape")):
+    if os.getcwd() not in sys.path:
+        sys.path.insert(0, os.getcwd())
 
 from energy_landscape.adapters.agentbench import infer
 
