@@ -1,0 +1,3 @@
+module: src.client.agents.energy.EnergyOrchestratorClient
+parameters:
+  name: "energy-orchestrator"
