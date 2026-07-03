@@ -177,27 +177,38 @@ class SQLiteDatabase(Database):
         self.sqlite_path = sqlite_path
 
     async def initialize(self):
-        # check if the SQLite database file exists
-        if not os.path.exists(self.sqlite_path):
-            raise FileNotFoundError(f"SQLite database file not found: {self.sqlite_path}")
+        # check if the SQLite database file exists (if path provided)
+        if self.sqlite_path and not os.path.exists(self.sqlite_path):
+            # Create an empty database if it doesn't exist
+            os.makedirs(os.path.dirname(self.sqlite_path), exist_ok=True)
+            import sqlite3
+            conn = sqlite3.connect(self.sqlite_path)
+            conn.close()
 
     async def delete(self):
-        pass
+        if self.sqlite_path and ":memory:" not in self.sqlite_path and "dbbench_tmp" in self.sqlite_path:
+            try:
+                if os.path.exists(self.sqlite_path):
+                    os.remove(self.sqlite_path)
+            except:
+                pass
 
     async def execute(self, sql: str, data: Union[Sequence, Dict[str, Any]] = ()) -> str:
-        """使用单独的Python进程执行SQLite查询"""
+        """Execute SQLite query using a separate Python process"""
+        # MySQL uses %s, SQLite uses ?
+        sql = sql.replace('%s', '?')
         try:
-            # 将查询参数转换为JSON字符串
+            # Convert query parameters to JSON string
             params_json = json.dumps(data) if isinstance(data, dict) else json.dumps(list(data))
 
-            # 创建内嵌的Python脚本代码，直接包含SQLite查询逻辑
+            # Create embedded Python script for SQLite query logic
             python_code = f'''
 import sqlite3
 import json
 import sys
 
 try:
-    # 解析参数
+    # Parse parameters
     params = json.loads('{params_json}') if '{params_json}' else ()
     
     # 连接数据库
@@ -234,13 +245,13 @@ except Exception as e:
     print(error_msg, file=sys.stderr)
     result_str = error_msg
 
-# 截断过长的结果并输出
+# Truncate long results and output
 if len(result_str) > 800:
     result_str = result_str[:800] + "[TRUNCATED]"
 print(result_str)
 '''
 
-            # 使用子进程执行内嵌代码
+            # Execute embedded code in a subprocess
             process = await asyncio.create_subprocess_exec(
                 sys.executable, "-c", python_code,
                 stdout=subprocess.PIPE,
@@ -283,8 +294,6 @@ print(result_str)
             return error_msg
 
     async def batch_execute(self, sql: List[Union[str, Tuple[str, Union[Sequence, Dict[str, Any]]]]]):
-        final_sql = ''
-        final_data = []
         for item in sql:
             if isinstance(item, str):
                 query = item
@@ -292,8 +301,4 @@ print(result_str)
             else:
                 query, data = item
             if query.strip():
-                if final_sql:
-                    final_sql += ';\n'
-                final_sql += query
-                final_data.extend(data)
-        await self.execute(final_sql, final_data)
+                await self.execute(query, data)
