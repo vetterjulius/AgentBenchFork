@@ -1,0 +1,166 @@
+(base) PS D:\Julius Vetter\Code\agentbench> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& "d:\Julius Vetter\Code\agentbench\.venv\Scripts\Activate.ps1")
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman machine stop
+>> podman machine rm
+Machine "podman-machine-default" stopped successfully
+The following files will be deleted:
+
+
+C:\Users\jvett\AppData\Local\Temp\podman\podman-machine-default.sock
+C:\Users\jvett\AppData\Local\Temp\podman\podman-machine-default-gvproxy.sock
+C:\Users\jvett\AppData\Local\Temp\podman\podman-machine-default-api.sock
+C:\Users\jvett\AppData\Local\Temp\podman\podman-machine-default.log
+Are you sure you want to continue? [y/N] y
+Registrierung wird aufgehoben.
+Der Vorgang wurde erfolgreich beendet. 
+
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman machine init --rootful --volume D:\podman-machine:/var/lib/containers/storage
+Looking up Podman Machine image at quay.io/podman/machine-os:5.7 to create VM
+Importing operating system into WSL (this may take a few minutes on a new WSL install)...
+Der Vorgang wurde erfolgreich beendet. 
+Configuring system...
+Machine init complete
+To start your machine run:
+
+        podman machine start
+
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman machine start
+Starting machine "podman-machine-default"
+API forwarding listening on: npipe:////./pipe/docker_engine
+
+Docker API clients default to this address. You do not need to set DOCKER_HOST.
+Machine "podman-machine-default" started successfully
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman compose -f extra/docker-compose.yml up                                                              
+>>>> Executing external compose provider "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker-compose.exe". Please see podman-compose(1) for how to disable this message. <<<<
+
+[+] Running 26/26
+ ✔ redis Pulled                                                                                                                                          62.1s 
+ ✔ controller Pulled                                                                                                                                     51.4s 
+                                                                                                                                                               
+                                                                                                                                                               
+                                                                                                                                                               
+                                                                                                                                                               
+time="2026-07-03T17:51:24+02:00" level=warning msg="Docker Compose is configured to build using Bake, but buildkit isn't enabled"
+[+] Running 0/5ontext to Docker daemon  216.6MB
+ - Service freebase            Building                                                                                                                 223.5s 
+ - Service alfworld-std        Building                                                                                                                 223.5s 
+ - Service dbbench-std         Building                                                                                                                 223.5s 
+ - Service os_interaction-std  Building                                                                                                                 223.5s 
+[+] Running 0/5hop-std         Building                                                                                                                 223.5s 
+ - Service freebase            Building                                                                                                                 223.7s 
+ - Service alfworld-std        Building                                                                                                                 223.7s 
+ - Service dbbench-std         Building                                                                                                                 223.7s 
+ - Service os_interaction-std  Building                                                                                                                 223.7s 
+ - Service webshop-std         Building                                                                                                                 223.7s 
+STEP 1/14: FROM python:3-slim
+STEP 1/10: FROM python:3.10
+Resolving %!q(<nil>) to docker.io (enforced by caller)
+Trying to pull docker.io/library/python:3.10...
+[2/2] STEP 1/18: FROM python:3.9-bullseye AS worker
+Resolving %!q(<nil>) to docker.io (enforced by caller)
+Trying to pull docker.io/library/python:3.9-bullseye...
+Resolving %!q(<nil>) to docker.io (enforced by caller)
+Trying to pull docker.io/library/python:3-slim...
+[+] Running 0/5 python:3.10
+ - Service alfworld-std        Building                                                                                                                 224.3s 
+ - Service dbbench-std         Building                                                                                                                 224.3s 
+ - Service os_interaction-std  Building                                                                                                                 224.3s 
+ - Service webshop-std         Building                                                                                                                 224.3s 
+creating build container: unable to copy from source docker://python:3-slim: initializing source docker://python:3-slim: unable to retrieve auth token: invalid username/password: unauthorized: incorrect username or password
+
+Error: executing C:\Program Files\Docker\Docker\resources\bin\docker-compose.exe -f extra/docker-compose.yml up: exit status 1
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman-compose -f extra/docker-compose.yml up
+Error: no Containerfile or Dockerfile specified or found in context directory, D:\Julius Vetter\Code\agentbench: Das System kann die angegebene Datei nicht finden.
+Error: no Containerfile or Dockerfile specified or found in context directory, D:\Julius Vetter\Code\agentbench: Das System kann die angegebene Datei nicht finden.den.den.
+Error: no Containerfile or Dockerfile specified or found in context directory, D:\Julius Vetter\Code\agentbench: Das System kann die angegebene Datei nicht finden.
+Error: no Containerfile or Dockerfile specified or found in context directory, D:\Julius Vetter\Code\agentbench: Das System kann die angegebene Datei nicht finden.
+ERROR:podman_compose:Build command failed
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> docker logout
+Removing login credentials for https://index.docker.io/v1/
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> docker login
+
+USING WEB-BASED LOGIN
+i Info → To sign in with credentials on the command line, use 'docker login -u <username>'
+         
+Your one-time device confirmation code is: WRCK-VLQN
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+
+Waiting for authentication in the browser…
+Login Succeeded
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> docker compose -f extra/docker-compose.yml up
+unable to get image 'agentbench-fc-webshop-std': error during connect: Get "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/images/agentbench-fc-webshop-std/json": open //./pipe/dockerDesktopLinuxEngine: Das System kann die angegebene Datei nicht finden.
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> docker info
+Client:
+ Version:    28.5.1
+ Context:    desktop-linux
+ Debug Mode: false
+ Plugins:
+  ai: Docker AI Agent - Ask Gordon (Docker Inc.)
+    Version:  v1.9.11
+    Path:     C:\Program Files\Docker\cli-plugins\docker-ai.exe
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.29.1-desktop.1
+    Path:     C:\Program Files\Docker\cli-plugins\docker-buildx.exe
+  compose: Docker Compose (Docker Inc.)
+    Version:  v2.40.3-desktop.1
+    Path:     C:\Program Files\Docker\cli-plugins\docker-compose.exe
+  debug: Get a shell into any image or container (Docker Inc.)
+    Version:  0.0.45
+    Path:     C:\Program Files\Docker\cli-plugins\docker-debug.exe
+  desktop: Docker Desktop commands (Docker Inc.)
+    Version:  v0.2.0
+    Path:     C:\Program Files\Docker\cli-plugins\docker-desktop.exe
+  extension: Manages Docker extensions (Docker Inc.)
+    Version:  v0.2.31
+    Path:     C:\Program Files\Docker\cli-plugins\docker-extension.exe
+  init: Creates Docker-related starter files for your project (Docker Inc.)
+    Version:  v1.4.0
+    Path:     C:\Program Files\Docker\cli-plugins\docker-init.exe
+  mcp: Docker MCP Plugin (Docker Inc.)
+    Version:  v0.26.0
+    Path:     C:\Users\jvett\.docker\cli-plugins\docker-mcp.exe
+  model: Docker Model Runner (Docker Inc.)
+    Version:  v0.1.46
+    Path:     C:\Program Files\Docker\cli-plugins\docker-model.exe
+  offload: Docker Offload (Docker Inc.)
+    Version:  v0.5.10
+    Path:     C:\Program Files\Docker\cli-plugins\docker-offload.exe
+  sandbox: Docker Sandbox (Docker Inc.)
+    Version:  v0.5.0
+    Path:     C:\Program Files\Docker\cli-plugins\docker-sandbox.exe
+  sbom: View the packaged-based Software Bill Of Materials (SBOM) for an image (Anchore Inc.)
+    Path:     C:\Program Files\Docker\cli-plugins\docker-sbom.exe
+  scout: Docker Scout (Docker Inc.)
+    Version:  v1.18.3
+    Path:     C:\Program Files\Docker\cli-plugins\docker-scout.exe
+Server:
+error during connect: Get "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/info": open //./pipe/dockerDesktopLinuxEngine: Das System kann die angegebene Datei nicht finden.
+  NAME                      STATE           VERSION
+  Ubuntu                    Stopped         2
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> docker machine start
+docker: unknown command: docker machine
+
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman machine stop
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl --shutdown
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl -l -v           
+  NAME                      STATE           VERSION
+* podman-machine-default    Running         2
+  Ubuntu                    Stopped         2
+Der Vorgang wurde erfolgreich beendet. 
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl -l -v                             
+* podman-machine-default    Running         2
+  docker-desktop            Running         2
+  Ubuntu                    Stopped         2
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl --shutdown
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> taskkill /F /IM "podman.exe"
+>> taskkill /F /IM "podman-desktop.exe"
+FEHLER: Der Prozess "podman.exe" wurde nicht gefunden.
+FEHLER: Der Prozess "podman-desktop.exe" wurde nicht gefunden.
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl -l -v
+  NAME                      STATE           VERSION
+* podman-machine-default    Running         2
+  docker-desktop            Running         2
+  Ubuntu                    Stopped         2
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> wsl --terminate podman-machine-default
+Der Vorgang wurde erfolgreich beendet. 
+(.venv) (base) PS D:\Julius Vetter\Code\agentbench> podman machine stop                   
+Machine "podman-machine-default" stopped successfully
