@@ -10,7 +10,7 @@ class EnergyAssignmentConfigTest(unittest.TestCase):
 
         self.assertIn("energy-orchestrator", config["definition"]["agent"])
 
-        value = AssignmentConfig.parse_obj(config)
+        value = AssignmentConfig.model_validate(config)
         AssignmentConfig.post_validate(value)
 
 

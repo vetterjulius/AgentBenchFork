@@ -40,11 +40,20 @@ def main():
 
     worker_processes = []
 
+    # Determine local IP for the worker to register itself.
+    # 'localhost' often doesn't work when the controller is in Docker.
+    import socket
+    try:
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+    except:
+        local_ip = "127.0.0.1"
+
     # Start Workers
     port = 5021
     for task_name, count in tasks_to_start.items():
         for i in range(count):
-            print(f"Starting Worker for {task_name} on port {port}...")
+            print(f"Starting Worker for {task_name} on port {port} (IP: {local_ip})...")
 
             # Use the definition import from the config, fallback to default assembly
             definition = config.get('definition', {})
@@ -61,16 +70,25 @@ def main():
                  if os.path.exists(potential_path):
                      task_config_path = potential_path
 
+            # Register as the host IP so Dockerized controller can reach back
+            self_url = f"http://{local_ip}:{port}/api"
+
+            stdout_log = f"worker_{task_name}_{i}_stdout.log"
+            stderr_log = f"worker_{task_name}_{i}_stderr.log"
+            print(f"  Logging to {stdout_log} and {stderr_log}")
+
             p = subprocess.Popen(
                 [
                     sys.executable, "-m", "agentrl.worker",
                     task_name,
                     "-c", task_config_path,
-                    "--self", f"http://localhost:{port}/api",
-                    "--controller", args.controller
+                    "--self", self_url,
+                    "--controller", args.controller,
+                    "--port", str(port),
+                    "--log-level", "INFO"
                 ],
-                stdout=open(f"worker_{task_name}_{i}_stdout.log", "w"),
-                stderr=open(f"worker_{task_name}_{i}_stderr.log", "w")
+                stdout=open(stdout_log, "w", encoding="utf-8"),
+                stderr=open(stderr_log, "w", encoding="utf-8")
             )
             worker_processes.append(p)
             port += 1

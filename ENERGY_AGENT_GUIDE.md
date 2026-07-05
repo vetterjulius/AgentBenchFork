@@ -79,9 +79,16 @@ If you see an error about port 5000:
 - **Mac Users**: Go to System Settings > General > AirPlay & Handoff and turn off "AirPlay Receiver".
 - **Others**: Run `kill $(lsof -t -i :5000)` to free the port.
 
+#### Zero Progress (Running Count: 0)
+If the benchmark starts but shows `Running Count: 0` indefinitely:
+1. **IP Address Issue**: The task worker must register itself with an IP address that the Dockerized controller can reach. `src/start_task.py` tries to detect your local IP automatically.
+2. **Check Logs**: Check `worker_dbbench-std_0_stderr.log`. If it says "Connection Error", the worker cannot reach the controller.
+3. **Firewall**: Ensure your Windows Firewall isn't blocking ports 5000-5025.
+
 #### Docker Errors
 If the controller fails to start:
 - Check if Docker is running (`docker ps`).
+- Try using `host.docker.internal` if you are on a complex network setup.
 
 #### Missing Dependencies
 If you get `ModuleNotFoundError`:

@@ -1,0 +1,10 @@
+[2026-07-05 17:28:28 UTC] [INFO] [__main__.py:37]: Starting task dbbench-std args.config='configs/tasks/task_assembly.yaml' args.controller='http://localhost:5000/api' args.self='http://localhost:5021/api' args.port=5021
+[2026-07-05 17:28:28 UTC] [INFO] [__main__.py:40]: Resolved configuration: {'docker': {'command': 'umask 0; [ -f /root/.setup.sh ] && bash /root/.setup.sh;'}, 'module': 'src.server.tasks.dbbench.DBBenchTask', 'parameters': {'concurrency': 32, 'max_round': 15, 'tools': [{'type': 'function', 'function': {'name': 'execute_sql', 'description': 'Executes a given SQL statement on the database and returns the result.', 'parameters': {'type': 'object', 'properties': {'query': {'type': 'string', 'description': 'The SQL query to be executed.'}}, 'required': ['query'], 'additionalProperties': False}}}, {'type': 'function', 'function': {'name': 'commit_final_answer', 'description': 'Commits the final answer after all operations are completed.', 'parameters': {'type': 'object', 'properties': {'answers': {'type': 'array', 'items': {'type': 'string'}, 'description': 'The list of final answers to commit.'}}, 'required': ['answers'], 'additionalProperties': False}}}], 'env_driver': 'docker', 'env_options': {'network_name': 'dbbench_default', 'state_driver': 'redis', 'state_options': {'connection': {'host': '172.17.0.1'}}}, 'name': 'dbbench-std', 'data_file': 'data/dbbench/standard.jsonl'}}
+[2026-07-05 17:28:28 UTC] [INFO] [task.py:74]: DBBench initialized with 300 samples. Root dir: None
+[2026-07-05 17:28:28 UTC] [INFO] [task_worker.py:105]: Task worker initialized with worker_id: ae3a3d20-c162-462d-b267-b03c95493c92
+INFO:     Started server process [235898]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 5021): [errno 98] address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.

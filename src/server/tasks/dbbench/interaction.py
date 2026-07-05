@@ -195,8 +195,15 @@ class SQLiteDatabase(Database):
 
     async def execute(self, sql: str, data: Union[Sequence, Dict[str, Any]] = ()) -> str:
         """Execute SQLite query using a separate Python process"""
-        # MySQL uses %s, SQLite uses ?
+        # Basic MySQL to SQLite translation
         sql = sql.replace('%s', '?')
+        # Remove MySQL engine specifications
+        import re
+        sql = re.sub(r'ENGINE\s*=\s*\w+', '', sql, flags=re.IGNORECASE)
+        # Convert backticks to double quotes for SQLite compatibility in some cases,
+        # but SQLite actually supports backticks. However, double quotes are more standard.
+        # sql = sql.replace('`', '"')
+
         try:
             # Convert query parameters to JSON string
             params_json = json.dumps(data) if isinstance(data, dict) else json.dumps(list(data))
