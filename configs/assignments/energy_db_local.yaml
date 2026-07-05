@@ -1,0 +1,19 @@
+# Energy Agent local preset
+# Usage:
+#   python -m src.assigner --config configs/assignments/energy_db_local.yaml
+
+import: definition_local.yaml
+
+concurrency:
+  task:
+    dbbench-std: 1
+  agent:
+    energy-orchestrator: 1
+
+assignments:
+  - agent:
+      - energy-orchestrator
+    task:
+      - dbbench-std
+
+output: "outputs/energy_db_local/{TIMESTAMP}"
